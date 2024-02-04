@@ -3,8 +3,10 @@ import fs from 'node:fs/promises'
 async function ls (dirPath) {
   const direntsArr = await fs.readdir(dirPath, { withFileTypes: true })
   direntsArr.sort((a, b) => {
-    if (a.name < b.name) return -1
-    if (a.name > b.name) return 1
+    const lowerCaseA = a.name.toLowerCase()
+    const lowerCaseB = b.name.toLowerCase()
+    if (lowerCaseA < lowerCaseB) return -1
+    if (lowerCaseA > lowerCaseB) return 1
     return 0
   })
 
