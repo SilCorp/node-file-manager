@@ -33,37 +33,31 @@ process.stdin.on('data', async (input) => {
       case 'up':
         currentDirPath = up(currentDirPath)
         break
-
       case 'cd': {
         const [dirPath] = args
         currentDirPath = await cd(dirPath, currentDirPath)
         break
       }
-
       case 'ls':
         await ls(currentDirPath)
         break
-
       case 'cat': {
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await cat(absoluteFilePath)
         break
       }
-
       case 'add': {
         const [fileName] = args
         await add(currentDirPath, fileName)
         break
       }
-
       case 'rn': {
         const [filePath, fileName] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rn(absoluteFilePath, fileName)
         break
       }
-
       case 'cp': {
         const [srcPath, destPath] = args
         const absoluteSrcPath = resolvePath(srcPath, currentDirPath)
@@ -71,7 +65,6 @@ process.stdin.on('data', async (input) => {
         await cp(absoluteSrcPath, absoluteDestPath)
         break
       }
-
       case 'mv': {
         const [filePath, destPath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
@@ -79,14 +72,12 @@ process.stdin.on('data', async (input) => {
         await mv(absoluteFilePath, absoluteDestPath)
         break
       }
-
       case 'rm': {
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rm(absoluteFilePath)
         break
       }
-
       default:
         console.error(inputErrorMessage)
     }
