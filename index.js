@@ -9,6 +9,7 @@ import up from './src/utils/up.js'
 import cd from './src/utils/cd.js'
 import ls from './src/utils/ls.js'
 import cat from './src/utils/cat.js'
+import add from './src/utils/add.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -38,6 +39,10 @@ process.stdin.on('data', async (input) => {
 
       case 'cat':
         await cat(...args, currentDirPath)
+        break
+
+      case 'add':
+        await add(currentDirPath, ...args)
         break
 
       default:
