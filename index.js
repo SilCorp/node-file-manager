@@ -14,6 +14,7 @@ import rn from './src/utils/rn.js'
 import resolveAbsolutePath from './src/helpers/resolveAbsolutePath.js'
 import cp from './src/utils/cp.js'
 import rm from './src/utils/rm.js'
+import mv from './src/utils/mv.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -61,6 +62,14 @@ process.stdin.on('data', async (input) => {
         const absoluteSrcPath = resolveAbsolutePath(srcPath, currentDirPath)
         const absoluteDestPath = resolveAbsolutePath(destPath, currentDirPath)
         await cp(absoluteSrcPath, absoluteDestPath)
+        break
+      }
+
+      case 'mv': {
+        const [filePath, destPath] = args
+        const absoluteFilePath = resolveAbsolutePath(filePath, currentDirPath)
+        const absoluteDestPath = resolveAbsolutePath(destPath, currentDirPath)
+        await mv(absoluteFilePath, absoluteDestPath)
         break
       }
 
