@@ -19,6 +19,7 @@ import os from './src/utils/os.js'
 import validateArguments from './src/helpers/validateArguments.js'
 import hash from './src/utils/hash.js'
 import compress from './src/utils/compress.js'
+import decompress from './src/utils/decompress.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = homedir()
@@ -97,6 +98,13 @@ process.stdin.on('data', async (input) => {
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         const absoluteDestPath = resolvePath(destPath, currentDirPath)
         await compress(absoluteFilePath, absoluteDestPath)
+        break
+      }
+      case 'decompress': {
+        const [filePath, destPath] = args
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        await decompress(absoluteFilePath, absoluteDestPath)
         break
       }
       default:
