@@ -44,9 +44,12 @@ process.stdin.on('data', async (input) => {
         await ls(currentDirPath)
         break
 
-      case 'cat':
-        await cat(...args, currentDirPath)
+      case 'cat': {
+        const [filePath] = args
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        await cat(absoluteFilePath)
         break
+      }
 
       case 'add':
         await add(currentDirPath, ...args)
