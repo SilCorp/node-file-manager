@@ -8,6 +8,7 @@ import os from 'node:os'
 import up from './src/utils/up.js'
 import cd from './src/utils/cd.js'
 import ls from './src/utils/ls.js'
+import cat from './src/utils/cat.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -35,13 +36,15 @@ process.stdin.on('data', async (input) => {
         await ls(currentDirPath)
         break
 
+      case 'cat':
+        await cat(...args, currentDirPath)
+        break
+
       default:
         console.error(inputErrorMessage)
-        return
     }
   } catch (e) {
     console.error(operationErrorMessage)
-    return
   }
 
   printDirectory(currentDirPath)
