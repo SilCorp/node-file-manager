@@ -51,9 +51,11 @@ process.stdin.on('data', async (input) => {
         break
       }
 
-      case 'add':
-        await add(currentDirPath, ...args)
+      case 'add': {
+        const [fileName] = args
+        await add(currentDirPath, fileName)
         break
+      }
 
       case 'rn': {
         const [filePath, fileName] = args
