@@ -1,20 +1,12 @@
-import path from 'node:path'
-import fs from 'node:fs/promises'
+import resolvePath from '../helpers/resolvePath.js'
+import isDirectoryExist from '../helpers/isDirectoryExist.js'
 
 async function cd (dirPath, currentPath) {
-  let newPath
+  const newPath = resolvePath(dirPath, currentPath)
 
-  if (path.isAbsolute(dirPath)) {
-    newPath = dirPath
-  } else {
-    newPath = path.join(currentPath, dirPath)
-  }
+  const isDirectoryNotExist = !(await isDirectoryExist(newPath))
 
-  newPath = path.normalize(newPath)
-
-  const isDirectoryExist = (await fs.stat(newPath, {})).isDirectory()
-
-  if (!isDirectoryExist) {
+  if (isDirectoryNotExist) {
     throw new Error(`No such directory: ${newPath}`)
   }
 

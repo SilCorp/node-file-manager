@@ -11,7 +11,7 @@ import ls from './src/utils/ls.js'
 import cat from './src/utils/cat.js'
 import add from './src/utils/add.js'
 import rn from './src/utils/rn.js'
-import resolveAbsolutePath from './src/helpers/resolveAbsolutePath.js'
+import resolvePath from './src/helpers/resolvePath.js'
 import cp from './src/utils/cp.js'
 import rm from './src/utils/rm.js'
 import mv from './src/utils/mv.js'
@@ -34,9 +34,11 @@ process.stdin.on('data', async (input) => {
         currentDirPath = up(currentDirPath)
         break
 
-      case 'cd':
-        currentDirPath = await cd(...args, currentDirPath)
+      case 'cd': {
+        const [dirPath] = args
+        currentDirPath = await cd(dirPath, currentDirPath)
         break
+      }
 
       case 'ls':
         await ls(currentDirPath)
@@ -52,30 +54,30 @@ process.stdin.on('data', async (input) => {
 
       case 'rn': {
         const [filePath, fileName] = args
-        const absoluteFilePath = resolveAbsolutePath(filePath, currentDirPath)
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rn(absoluteFilePath, fileName)
         break
       }
 
       case 'cp': {
         const [srcPath, destPath] = args
-        const absoluteSrcPath = resolveAbsolutePath(srcPath, currentDirPath)
-        const absoluteDestPath = resolveAbsolutePath(destPath, currentDirPath)
+        const absoluteSrcPath = resolvePath(srcPath, currentDirPath)
+        const absoluteDestPath = resolvePath(destPath, currentDirPath)
         await cp(absoluteSrcPath, absoluteDestPath)
         break
       }
 
       case 'mv': {
         const [filePath, destPath] = args
-        const absoluteFilePath = resolveAbsolutePath(filePath, currentDirPath)
-        const absoluteDestPath = resolveAbsolutePath(destPath, currentDirPath)
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteDestPath = resolvePath(destPath, currentDirPath)
         await mv(absoluteFilePath, absoluteDestPath)
         break
       }
 
       case 'rm': {
         const [filePath] = args
-        const absoluteFilePath = resolveAbsolutePath(filePath, currentDirPath)
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rm(absoluteFilePath)
         break
       }
