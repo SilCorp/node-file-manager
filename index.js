@@ -7,6 +7,7 @@ import { inputErrorMessage, operationErrorMessage } from './src/constants.js'
 import os from 'node:os'
 import up from './src/utils/up.js'
 import cd from './src/utils/cd.js'
+import ls from './src/utils/ls.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -30,6 +31,10 @@ process.stdin.on('data', async (input) => {
         currentDirPath = await cd(...args, currentDirPath)
         break
 
+      case 'ls':
+        await ls(currentDirPath)
+        break
+
       default:
         console.error(inputErrorMessage)
         return
@@ -42,5 +47,8 @@ process.stdin.on('data', async (input) => {
   printDirectory(currentDirPath)
   promptForUserInput()
 })
-process.on('SIGINT', () => process.exit())
+process.on('SIGINT', () => {
+  process.stdout.write('\n')
+  process.exit()
+})
 process.on('exit', () => printGoodbye(userName))
