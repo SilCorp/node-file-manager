@@ -10,6 +10,8 @@ import cd from './src/utils/cd.js'
 import ls from './src/utils/ls.js'
 import cat from './src/utils/cat.js'
 import add from './src/utils/add.js'
+import rn from './src/utils/rn.js'
+import resolveAbsolutePath from './src/helpers/resolveAbsolutePath.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -44,6 +46,13 @@ process.stdin.on('data', async (input) => {
       case 'add':
         await add(currentDirPath, ...args)
         break
+
+      case 'rn': {
+        const [filePath, fileName] = args
+        const absoluteFilePath = resolveAbsolutePath(filePath, currentDirPath)
+        await rn(absoluteFilePath, fileName)
+        break
+      }
 
       default:
         console.error(inputErrorMessage)
