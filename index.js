@@ -3,10 +3,12 @@ import printGreeting from './src/helpers/printGreeting.js'
 import printGoodbye from './src/helpers/printGoodbye.js'
 import printDirectory from './src/helpers/printDirectory.js'
 import promptForUserInput from './src/helpers/promptForUserInput.js'
-import { homeDir, inputErrorMessage, operationErrorMessage } from './src/constants.js'
+import { inputErrorMessage, operationErrorMessage } from './src/constants.js'
+import os from 'node:os'
+import up from './src/utils/up.js'
 
 const { '--username': userName } = parseArgs()
-const currentDirPath = homeDir
+let currentDirPath = os.homedir()
 
 printGreeting(userName)
 printDirectory(currentDirPath)
@@ -19,8 +21,8 @@ process.stdin.on('data', (input) => {
 
   try {
     switch (utilName) {
-      case 'ls':
-        console.log('ls: ', ...args)
+      case 'up':
+        currentDirPath = up(currentDirPath)
         break
 
       default:
