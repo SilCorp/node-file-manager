@@ -6,6 +6,7 @@ import promptForUserInput from './src/helpers/promptForUserInput.js'
 import { inputErrorMessage, operationErrorMessage } from './src/constants.js'
 import os from 'node:os'
 import up from './src/utils/up.js'
+import cd from './src/utils/cd.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = os.homedir()
@@ -13,7 +14,7 @@ let currentDirPath = os.homedir()
 printGreeting(userName)
 printDirectory(currentDirPath)
 promptForUserInput()
-process.stdin.on('data', (input) => {
+process.stdin.on('data', async (input) => {
   const stringifiedInput = input.toString().trim()
   if (stringifiedInput === '.exit') process.exit()
 
@@ -23,6 +24,10 @@ process.stdin.on('data', (input) => {
     switch (utilName) {
       case 'up':
         currentDirPath = up(currentDirPath)
+        break
+
+      case 'cd':
+        currentDirPath = await cd(...args, currentDirPath)
         break
 
       default:
