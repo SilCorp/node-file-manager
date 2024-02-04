@@ -18,6 +18,7 @@ import mv from './src/utils/mv.js'
 import os from './src/utils/os.js'
 import validateArguments from './src/helpers/validateArguments.js'
 import hash from './src/utils/hash.js'
+import compress from './src/utils/compress.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = homedir()
@@ -89,6 +90,13 @@ process.stdin.on('data', async (input) => {
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await hash(absoluteFilePath)
+        break
+      }
+      case 'compress': {
+        const [filePath, destPath] = args
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        await compress(absoluteFilePath, absoluteDestPath)
         break
       }
       default:
