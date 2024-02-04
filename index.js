@@ -17,6 +17,7 @@ import rm from './src/utils/rm.js'
 import mv from './src/utils/mv.js'
 import os from './src/utils/os.js'
 import validateArguments from './src/helpers/validateArguments.js'
+import hash from './src/utils/hash.js'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = homedir()
@@ -84,6 +85,12 @@ process.stdin.on('data', async (input) => {
         validateArguments(1, ...args)
         os(...args)
         break
+      case 'hash': {
+        const [filePath] = args
+        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        await hash(absoluteFilePath)
+        break
+      }
       default:
         console.error(inputErrorMessage)
     }
