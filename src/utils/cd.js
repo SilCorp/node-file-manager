@@ -1,8 +1,8 @@
-import resolvePath from '../helpers/resolvePath.js'
 import isDirectoryExist from '../helpers/isDirectoryExist.js'
+import path from 'node:path'
 
 async function cd (dirPath, currentPath) {
-  const newPath = resolvePath(dirPath, currentPath)
+  const newPath = path.resolve(currentPath, dirPath)
 
   const isDirectoryNotExist = !(await isDirectoryExist(newPath))
 

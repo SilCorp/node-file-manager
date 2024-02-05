@@ -16,7 +16,6 @@ import ls from './src/utils/ls.js'
 import cat from './src/utils/cat.js'
 import add from './src/utils/add.js'
 import rn from './src/utils/rn.js'
-import resolvePath from './src/helpers/resolvePath.js'
 import cp from './src/utils/cp.js'
 import rm from './src/utils/rm.js'
 import mv from './src/utils/mv.js'
@@ -25,6 +24,7 @@ import validateNumOfArgs from './src/helpers/validateNumOfArgs.js'
 import hash from './src/utils/hash.js'
 import compress from './src/utils/compress.js'
 import decompress from './src/utils/decompress.js'
+import path from 'node:path'
 
 const { '--username': userName } = parseArgs()
 let currentDirPath = homedir()
@@ -59,7 +59,7 @@ process.stdin.on('data', async (input) => {
       case 'cat': {
         validateNumOfArgs(1, ...args)
         const [filePath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
         await cat(absoluteFilePath)
         break
       }
@@ -72,30 +72,30 @@ process.stdin.on('data', async (input) => {
       case 'rn': {
         validateNumOfArgs(2, ...args)
         const [filePath, fileName] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
         await rn(absoluteFilePath, fileName)
         break
       }
       case 'cp': {
         validateNumOfArgs(2, ...args)
         const [srcPath, destPath] = args
-        const absoluteSrcPath = resolvePath(srcPath, currentDirPath)
-        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        const absoluteSrcPath = path.resolve(currentDirPath, srcPath)
+        const absoluteDestPath = path.resolve(currentDirPath, destPath)
         await cp(absoluteSrcPath, absoluteDestPath)
         break
       }
       case 'mv': {
         validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
-        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
+        const absoluteDestPath = path.resolve(currentDirPath, destPath)
         await mv(absoluteFilePath, absoluteDestPath)
         break
       }
       case 'rm': {
         validateNumOfArgs(1, ...args)
         const [filePath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
         await rm(absoluteFilePath)
         break
       }
@@ -108,23 +108,23 @@ process.stdin.on('data', async (input) => {
       case 'hash': {
         validateNumOfArgs(1, ...args)
         const [filePath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
         await hash(absoluteFilePath)
         break
       }
       case 'compress': {
         validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
-        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
+        const absoluteDestPath = path.resolve(currentDirPath, destPath)
         await compress(absoluteFilePath, absoluteDestPath)
         break
       }
       case 'decompress': {
         validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
-        const absoluteFilePath = resolvePath(filePath, currentDirPath)
-        const absoluteDestPath = resolvePath(destPath, currentDirPath)
+        const absoluteFilePath = path.resolve(currentDirPath, filePath)
+        const absoluteDestPath = path.resolve(currentDirPath, destPath)
         await decompress(absoluteFilePath, absoluteDestPath)
         break
       }
