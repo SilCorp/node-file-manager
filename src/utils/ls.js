@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 
-async function ls (dirPath) {
-  const direntsArr = await fs.readdir(dirPath, { withFileTypes: true })
+async function ls () {
+  const direntsArr = await fs.readdir(process.cwd(), { withFileTypes: true })
   direntsArr.sort((a, b) => {
     const lowerCaseA = a.name.toLowerCase()
     const lowerCaseB = b.name.toLowerCase()

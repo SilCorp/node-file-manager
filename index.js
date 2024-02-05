@@ -1,7 +1,7 @@
 import parseArgs from './src/helpers/parseArgs.js'
 import printGreeting from './src/helpers/printGreeting.js'
 import printGoodbye from './src/helpers/printGoodbye.js'
-import printDirectory from './src/helpers/printDirectory.js'
+import printCurrentDirectory from './src/helpers/printCurrentDirectory.js'
 import promptForUserInput from './src/helpers/promptForUserInput.js'
 import {
   inputErrorMessage,
@@ -10,8 +10,6 @@ import {
   unknownArgsErrorMessage
 } from './src/constants.js'
 import { homedir } from 'node:os'
-import up from './src/utils/up.js'
-import cd from './src/utils/cd.js'
 import ls from './src/utils/ls.js'
 import cat from './src/utils/cat.js'
 import add from './src/utils/add.js'
@@ -24,13 +22,12 @@ import validateNumOfArgs from './src/helpers/validateNumOfArgs.js'
 import hash from './src/utils/hash.js'
 import compress from './src/utils/compress.js'
 import decompress from './src/utils/decompress.js'
-import path from 'node:path'
 
 const { '--username': userName } = parseArgs()
-let currentDirPath = homedir()
 
+process.chdir(homedir())
 printGreeting(userName)
-printDirectory(currentDirPath)
+printCurrentDirectory()
 promptForUserInput()
 process.stdin.on('data', async (input) => {
   const stringifiedInput = input.toString().trim()
@@ -42,90 +39,67 @@ process.stdin.on('data', async (input) => {
     switch (utilName) {
       case 'up': {
         validateNumOfArgs(0, ...args)
-        currentDirPath = up(currentDirPath)
+        process.chdir('..')
         break
       }
       case 'cd': {
-        const [dirPath] = args
         validateNumOfArgs(1, ...args)
-        currentDirPath = await cd(dirPath, currentDirPath)
+        process.chdir(...args)
         break
       }
       case 'ls': {
         validateNumOfArgs(0, ...args)
-        await ls(currentDirPath)
+        await ls()
         break
       }
       case 'cat': {
         validateNumOfArgs(1, ...args)
-        const [filePath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        await cat(absoluteFilePath)
+        await cat(...args)
         break
       }
       case 'add': {
         validateNumOfArgs(1, ...args)
-        const [fileName] = args
-        await add(currentDirPath, fileName)
+        await add(...args)
         break
       }
       case 'rn': {
         validateNumOfArgs(2, ...args)
-        const [filePath, fileName] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        await rn(absoluteFilePath, fileName)
+        await rn(...args)
         break
       }
       case 'cp': {
         validateNumOfArgs(2, ...args)
-        const [srcPath, destPath] = args
-        const absoluteSrcPath = path.resolve(currentDirPath, srcPath)
-        const absoluteDestPath = path.resolve(currentDirPath, destPath)
-        await cp(absoluteSrcPath, absoluteDestPath)
+        await cp(...args)
         break
       }
       case 'mv': {
         validateNumOfArgs(2, ...args)
-        const [filePath, destPath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        const absoluteDestPath = path.resolve(currentDirPath, destPath)
-        await mv(absoluteFilePath, absoluteDestPath)
+        await mv(...args)
         break
       }
       case 'rm': {
         validateNumOfArgs(1, ...args)
-        const [filePath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        await rm(absoluteFilePath)
+        await rm(...args)
         break
       }
       case 'os': {
         validateNumOfArgs(1, ...args)
-        const [utilKey] = args
-        os(utilKey)
+        os(...args)
         break
       }
       case 'hash': {
         validateNumOfArgs(1, ...args)
-        const [filePath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        await hash(absoluteFilePath)
+        await hash(...args)
         break
       }
       case 'compress': {
         validateNumOfArgs(2, ...args)
-        const [filePath, destPath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        const absoluteDestPath = path.resolve(currentDirPath, destPath)
-        await compress(absoluteFilePath, absoluteDestPath)
+        await compress(...args)
         break
       }
       case 'decompress': {
         validateNumOfArgs(2, ...args)
-        const [filePath, destPath] = args
-        const absoluteFilePath = path.resolve(currentDirPath, filePath)
-        const absoluteDestPath = path.resolve(currentDirPath, destPath)
-        await decompress(absoluteFilePath, absoluteDestPath)
+        await decompress(...args)
         break
       }
       default:
@@ -139,7 +113,7 @@ process.stdin.on('data', async (input) => {
     }
   }
 
-  printDirectory(currentDirPath)
+  printCurrentDirectory()
   promptForUserInput()
 })
 process.on('SIGINT', () => {
