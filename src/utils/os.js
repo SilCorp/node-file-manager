@@ -1,4 +1,5 @@
 import osModule from 'node:os'
+import { unknownArgsErrorMessage } from '../constants.js'
 
 function os (param) {
   switch (param) {
@@ -18,7 +19,7 @@ function os (param) {
       console.log(getArch())
       break
     default:
-      throw new Error(`Unknown parameter: ${param}`)
+      throw new Error(`${unknownArgsErrorMessage}: ${param}`)
   }
 }
 

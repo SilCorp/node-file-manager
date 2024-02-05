@@ -3,7 +3,12 @@ import printGreeting from './src/helpers/printGreeting.js'
 import printGoodbye from './src/helpers/printGoodbye.js'
 import printDirectory from './src/helpers/printDirectory.js'
 import promptForUserInput from './src/helpers/promptForUserInput.js'
-import { inputErrorMessage, operationErrorMessage } from './src/constants.js'
+import {
+  inputErrorMessage,
+  lackOfArgsErrorMessage,
+  operationErrorMessage,
+  unknownArgsErrorMessage
+} from './src/constants.js'
 import { homedir } from 'node:os'
 import up from './src/utils/up.js'
 import cd from './src/utils/cd.js'
@@ -16,7 +21,7 @@ import cp from './src/utils/cp.js'
 import rm from './src/utils/rm.js'
 import mv from './src/utils/mv.js'
 import os from './src/utils/os.js'
-import validateArguments from './src/helpers/validateArguments.js'
+import validateNumOfArgs from './src/helpers/validateNumOfArgs.js'
 import hash from './src/utils/hash.js'
 import compress from './src/utils/compress.js'
 import decompress from './src/utils/decompress.js'
@@ -35,35 +40,44 @@ process.stdin.on('data', async (input) => {
 
   try {
     switch (utilName) {
-      case 'up':
+      case 'up': {
+        validateNumOfArgs(0, ...args)
         currentDirPath = up(currentDirPath)
         break
+      }
       case 'cd': {
         const [dirPath] = args
+        validateNumOfArgs(1, ...args)
         currentDirPath = await cd(dirPath, currentDirPath)
         break
       }
-      case 'ls':
+      case 'ls': {
+        validateNumOfArgs(0, ...args)
         await ls(currentDirPath)
         break
+      }
       case 'cat': {
+        validateNumOfArgs(1, ...args)
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await cat(absoluteFilePath)
         break
       }
       case 'add': {
+        validateNumOfArgs(1, ...args)
         const [fileName] = args
         await add(currentDirPath, fileName)
         break
       }
       case 'rn': {
+        validateNumOfArgs(2, ...args)
         const [filePath, fileName] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rn(absoluteFilePath, fileName)
         break
       }
       case 'cp': {
+        validateNumOfArgs(2, ...args)
         const [srcPath, destPath] = args
         const absoluteSrcPath = resolvePath(srcPath, currentDirPath)
         const absoluteDestPath = resolvePath(destPath, currentDirPath)
@@ -71,6 +85,7 @@ process.stdin.on('data', async (input) => {
         break
       }
       case 'mv': {
+        validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         const absoluteDestPath = resolvePath(destPath, currentDirPath)
@@ -78,22 +93,27 @@ process.stdin.on('data', async (input) => {
         break
       }
       case 'rm': {
+        validateNumOfArgs(1, ...args)
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await rm(absoluteFilePath)
         break
       }
-      case 'os':
-        validateArguments(1, ...args)
-        os(...args)
+      case 'os': {
+        validateNumOfArgs(1, ...args)
+        const [utilKey] = args
+        os(utilKey)
         break
+      }
       case 'hash': {
+        validateNumOfArgs(1, ...args)
         const [filePath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         await hash(absoluteFilePath)
         break
       }
       case 'compress': {
+        validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         const absoluteDestPath = resolvePath(destPath, currentDirPath)
@@ -101,6 +121,7 @@ process.stdin.on('data', async (input) => {
         break
       }
       case 'decompress': {
+        validateNumOfArgs(2, ...args)
         const [filePath, destPath] = args
         const absoluteFilePath = resolvePath(filePath, currentDirPath)
         const absoluteDestPath = resolvePath(destPath, currentDirPath)
@@ -111,7 +132,11 @@ process.stdin.on('data', async (input) => {
         console.error(inputErrorMessage)
     }
   } catch (e) {
-    console.error(operationErrorMessage)
+    if (e.message === lackOfArgsErrorMessage || e.message.startsWith(unknownArgsErrorMessage)) {
+      console.error(inputErrorMessage)
+    } else {
+      console.error(operationErrorMessage)
+    }
   }
 
   printDirectory(currentDirPath)
